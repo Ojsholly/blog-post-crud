@@ -8,19 +8,21 @@ router.get('/', (req, res) => {
     res.send("We are on the posts page");
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     const post = new Post({
         title: req.body.title,
         description: req.body.description,
     });
 
-    post.save()
-        .then(data => {
-            res.status(201).json(data);
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message });
-        });
+    try {
+        const savedPost = await post.save();
+
+        res.status(201).json({ status: "success", data: savedPost });
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({ status: "error", error: error.message });
+    }
 });
 
 
