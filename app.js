@@ -1,7 +1,10 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 require('dotenv/config');
+
+app.use(bodyParser.json());
 
 //Routes
 app.get('/', (req, res) => {
@@ -21,24 +24,24 @@ const clientOptions = {
     }
 };
 
-
 async function run() {
     try {
         // Connect to DB.
         await mongoose.connect(process.env.DB_CONNECTION, clientOptions);
 
-        await mongoose.connection.db.admin().command({
-            ping: 1
-        });
-
+        // Test the connection by pinging the MongoDB server.
+        await mongoose.connection.db.admin().command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } catch (error) {
+        console.error("Error connecting to MongoDB:", error.message);
         await mongoose.disconnect();
     }
 }
 
-run().catch(console.dir);
+// Run the function to test the connection.
+run().catch(console.error);
 
-
-// How to start listening to the server.
-app.listen(3000);
+// Start listening to the server.
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
