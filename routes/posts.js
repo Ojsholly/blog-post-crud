@@ -50,4 +50,17 @@ router.get('/:id', async (req, res) => {
 });
 
 
+// Update a post
+router.patch('/:id', async (req, res) => {
+   try {
+       const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, {});
+
+       res.status(200).json({ status: "success", data: updatedPost });
+   } catch (error) {
+       console.log(error);
+
+       res.status(500).json({ status: "error", message: error.message });
+   }
+});
+
 module.exports = router;
